@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -28,39 +29,18 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+/// 初期化をinitState()で行う為に、Statefulを選択。
+/// constructorの中で、非同期処理は呼ばないのセオリーのようだ。
 class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Material3 Theme'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyWidget()),
-                );
-              },
-              child: const Text('Go to MyWidget'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MyWidget extends StatelessWidget {
-  MyWidget({super.key}) {
-    initializeTts();
-  }
   final FlutterTts tts = FlutterTts();
   final String _text1 = 'Hello, World!. ABC.';
   final String _text2 = 'おはよう。こんにちは。松田です。';
+
+  @override
+  void initState() {
+    super.initState();
+    initializeTts();
+  }
 
   initializeTts() async {
     await tts.setLanguage('ja-JA');
@@ -80,11 +60,10 @@ class MyWidget extends StatelessWidget {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () async {
-                await tts.speak(_text1);
-              },
-              child: const Text('Hello'),
-            ),
+                onPressed: () async {
+                  await tts.speak(_text1);
+                },
+                child: const Text('Hello')),
             ElevatedButton(
                 onPressed: () async {
                   await tts.speak(_text2);
